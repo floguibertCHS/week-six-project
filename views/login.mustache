@@ -1,0 +1,21 @@
+<html>
+
+<head>
+</head>
+<body>
+<form method="post" action="/">
+    <input type="text" name="email" placeholder="Email" value="{{email}}"/>
+    <input type="password" name="password" placeholder="Password"/>
+
+    <button type="submit">Submit</button>
+    
+{{#users}}
+    <p>
+    {{email}}
+    </p>
+{{/users}}
+
+</form>
+</body>
+
+</html>
