@@ -1,0 +1,30 @@
+<html>
+
+<head>
+    <title>Likes</title>
+    <script src="https://use.fontawesome.com/00e42f7d6a.js"></script>
+</head>
+
+<body>
+    <div>    
+        <a href="/allGabs">Gabble </a> |
+        <a href="/newGab">Create a new gab </a> | logged in as {{user}} |
+        <a href="/logout">Log out</a>
+    </div>  
+    <div>
+
+        <p><strong>{{author}}</strong>: {{content}}</p> 
+        <p>{{timestamp}}</p>
+        <h3>Liked by:</h3>
+        {{#likes}}
+            <p>{{dataValues.username}}</p>
+        {{/likes}}
+    </div>  
+    <form action="/delete/{{id}}" method="POST">  
+        <button type="submit"><i class="fa fa-trash-o" aria-hidden="true"></i>
+        </button>
+    </form>
+
+</body>
+
+</html>

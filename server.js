@@ -2,97 +2,129 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mustache = require('mustache-express');
 const expressValidator = require('express-validator');
-const cookieParser = require('cookie-parser')
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+
+const indexController = require('./controllers/index-controller');
+const userController = require('./controllers/user-controller');
+const messageController = require('./controllers/message-controller');
+
+var router = express.Router()
 var application = express();
 
 application.engine('mustache', mustache());
 
+// config
 application.set('views', './views');
 application.set('view engine', 'mustache');
+//db
+const models = require("./models");
+// var storage = {
+//     // users: [{ name: 'admin', password: 'qwer1234' }],
+//     // allGabs: [],
+//     sessionId: 0,
+//     sessions: [],
+// };
 
-var storage = {
-    users: [{ name: 'admin', password: 'qwer1234' }],
-    missions: [],
-    sessionId: 0,
-    sessions: []
-};
+// middleware
 application.use(cookieParser());
-application.use(bodyParser.urlencoded());
+application.use(bodyParser.urlencoded({extended: true}));
+application.use(session({
+	secret: "secret_code_gabble",
+	resave: false,
+	saveUninitialized: true
+}));
+// application.use(expressValidator());
 
-application.use((request, response, next) => {
-    if (request.cookies.session !== undefined) {
-        var sessionId = parseInt(request.cookies.session);
-        var user = storage.sessions[sessionId];
+// controllers
+application.use(indexController);
+application.use(userController);
+application.use(messageController);
+application.use(express.static('public'));
 
-        if (!user) {
-            response.locals.user = { isAuthenticated: false };
-        }
-        else {
-            response.locals.user = { isAuthenticated: true };
-        }
-    } else {
-        response.locals.user = { isAuthenticated: false };
-    }
+// application.use((request, response, next) => {
+//     if (request.cookies.session !== undefined) {
+//         var sessionId = parseInt(request.cookies.session);
+//         var user = storage.sessions[sessionId];
+//         var author = request.session.author;
 
-    next();
+//         if (!user) {
+//             response.locals.user = { isAuthenticated: false };
+//         }
+//         else {
+//             response.locals.user = { isAuthenticated: true };
+//         }
+//     } else {
+//         response.locals.user = { isAuthenticated: false };
+//     }
+
+//     next();
+// });
+
+// var author = '';
+
+
+// application.get('/', (request, response) => {
+//     response.render('index');
+// });
+// application.get('/signup', (request, response) => {
+//     response.render('signup');
+// });
+// application.post('/signup', (request, response) => {
+//     //todo: validation
+
+//     var user = {
+//         name: request.body.name,
+//         password: request.body.password
+//     }
+
+//     storage.users.push(user);
+
+//     //todo: sell information to microsoft
+//     response.redirect('/login');
+// });
+// application.get('/login', (request, response) => {
+//     response.render('login');
+// });
+// application.post('/login', (request, response) => {
+//     var name = request.body.name;
+//     var password = request.body.password;
+
+//     var user = storage.users.find(user => { return user.name === name && user.password === password })
+
+//     if (!user) {
+//         response.render('login');
+//     } else {
+//         var sessionId = storage.sessionId;
+//         storage.sessionId++;
+//         storage.sessions.push(user);
+
+//         response.cookie('session', sessionId);
+
+//         response.redirect('/allGabs');
+//     }
+// });
+
+// application.get('/allGabs', (request, response) => {
+//     if (request.cookies.session == !undefined) {
+//         var model = { allGabs: storage.allGabs };
+//         response.render('allGabs');
+//     } else {
+//         response.redirect('login');
+//     }
+// });
+// application.post('/allGabs', (request, response) => {
+//     response.render('allGabs');
+
+// });
+application.get('/allGabs/:messageId', (request, response) => {
+    response.render('oneGab');
 });
+// application.get('/newGab', (request, response) => {
+//     response.render('newGab');
 
-application.get('/', (request, response) => {
-    response.render('index');
-});
-application.get('/register', (request, response) => {
-    response.render('register');
-});
-application.post('/register', (request, response) => {
-    //todo: validation
-
-    var user = {
-        name: request.body.name,
-        password: request.body.password
-    }
-
-    storage.users.push(user);
-
-    //todo: sell information to microsoft
-    response.redirect('/signin');
-});
-application.get('/signin', (request, response) => {
-    response.render('signin');
-});
-application.post('/signin', (request, response) => {
-    var name = request.body.name;
-    var password = request.body.password;
-
-    var user = storage.users.find(user => { return user.name === name && user.password === password })
-
-    if (!user) {
-        response.render('signin');
-    } else {
-        var sessionId = storage.sessionId;
-        storage.sessionId++;
-        storage.sessions.push(user);
-
-        response.cookie('session', sessionId);
-
-        response.redirect('/missions');
-    }
-});
-
-application.get('/missions', (request, response) => {
-    if (response.locals.user.isAuthenticated) {
-        var model = { missions: storage.missions };
-        response.render('missions', model);
-    } else {
-        response.redirect('signin');
-    }
-});
-application.post('/missions', (request, response) => {
-
-});
-application.get('/missions/:missionId', (request, response) => {
-    response.render('mission');
-});
-application.put('/missions/:missionId', (request, response) => {
+// });
+application.put('/allGabs/:messageId', (request, response) => {
 
 });
 

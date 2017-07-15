@@ -1,0 +1,26 @@
+<html>
+   <head>
+        <title>AllGabs</title>
+        <script src="https://use.fontawesome.com/00e42f7d6a.js"></script>
+    </head>
+    <body>
+        <div>    
+            <a href="/allGabs">Gabble </a> |
+            <a href="/newGab">Create a new gab </a> | logged in as {{user}} |
+            <a href="/logout">Log out</a>
+        </div>    
+        <div>
+        <h1>GABS</h1>
+        {{#gabs}}
+            <p><strong>{{author}}</strong>: {{content}}</p> 
+            <p>{{timestamp}}</p>
+            <div class='likes'>
+                <a href="/allGabs/{{id}}/like">{{likes.length}} Likes </a>
+                <form action="/allGabs/{{id}}/like" method="POST">
+                    <button type="submit"><i class="fa fa-heart" aria-hidden="true"></i></button>
+                </form>
+            </div>
+       {{/gabs}}
+       </div>
+    </body>
+</html>
